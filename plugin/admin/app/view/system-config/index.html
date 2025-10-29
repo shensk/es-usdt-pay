@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>USDT支付系统配置</title>
+    <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+    <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+</head>
+<body class="pear-container">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h2 class="header-title">USDT支付系统配置</h2>
+        </div>
+        <div class="layui-card-body">
+            <form class="layui-form" lay-filter="config-form">
+                <div class="layui-tab" lay-filter="config-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">API配置</li>
+                        <li>支付配置</li>
+                        <li>其他配置</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <!-- API配置 -->
+                        <div class="layui-tab-item layui-show">
+                            <?php if(isset($groupedConfigs['api'])): ?>
+                                <?php foreach($groupedConfigs['api'] as $config): ?>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"><?=$config['title']?></label>
+                                    <div class="layui-input-block">
+                                        <?php if($config['type'] === 'textarea'): ?>
+                                            <textarea name="configs[<?=$config['key']?>]" placeholder="<?=$config['description']?>" class="layui-textarea"><?=$config['value']?></textarea>
+                                        <?php elseif($config['type'] === 'number'): ?>
+                                            <input type="number" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php else: ?>
+                                            <input type="text" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php endif; ?>
+                                        <div class="layui-form-mid layui-word-aux"><?=$config['description']?></div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <!-- 支付配置 -->
+                        <div class="layui-tab-item">
+                            <?php if(isset($groupedConfigs['payment'])): ?>
+                                <?php foreach($groupedConfigs['payment'] as $config): ?>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"><?=$config['title']?></label>
+                                    <div class="layui-input-block">
+                                        <?php if($config['type'] === 'textarea'): ?>
+                                            <textarea name="configs[<?=$config['key']?>]" placeholder="<?=$config['description']?>" class="layui-textarea"><?=$config['value']?></textarea>
+                                        <?php elseif($config['type'] === 'number' || $config['type'] === 'float' || $config['type'] === 'int'): ?>
+                                            <input type="number" step="<?=$config['type'] === 'float' ? '0.01' : '1'?>" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php else: ?>
+                                            <input type="text" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php endif; ?>
+                                        <div class="layui-form-mid layui-word-aux"><?=$config['description']?></div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <!-- 其他配置 -->
+                        <div class="layui-tab-item">
+                            <div class="layui-alert layui-alert-info">
+                                <i class="layui-icon layui-icon-tips"></i>
+                                <strong>区块链监听说明：</strong><br>
+                                本系统使用TronScan API监听TRC20交易，与原Epusdt系统保持一致，无需配置API密钥。<br>
+                                系统会自动监听所有钱包地址的USDT转账记录，实现自动到账确认。
+                            </div>
+                            <div class="layui-alert layui-alert-normal">
+                                <i class="layui-icon layui-icon-tips"></i>
+                                其他高级配置项，请谨慎修改
+                            </div>
+                            <?php if(isset($groupedConfigs['other'])): ?>
+                                <?php foreach($groupedConfigs['other'] as $config): ?>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"><?=$config['title']?></label>
+                                    <div class="layui-input-block">
+                                        <?php if($config['type'] === 'textarea'): ?>
+                                            <textarea name="configs[<?=$config['key']?>]" placeholder="<?=$config['description']?>" class="layui-textarea"><?=$config['value']?></textarea>
+                                        <?php elseif($config['type'] === 'number' || $config['type'] === 'int'): ?>
+                                            <input type="number" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php else: ?>
+                                            <input type="text" name="configs[<?=$config['key']?>]" value="<?=$config['value']?>" placeholder="<?=$config['description']?>" class="layui-input">
+                                        <?php endif; ?>
+                                        <div class="layui-form-mid layui-word-aux"><?=$config['description']?></div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn layui-btn-warm" id="clear-cache">
+                                        <i class="layui-icon layui-icon-refresh-1"></i> 清除缓存
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit lay-filter="config-save">
+                            <i class="layui-icon layui-icon-ok"></i> 保存配置
+                        </button>
+                        <button type="reset" class="layui-btn layui-btn-primary">
+                            <i class="layui-icon layui-icon-refresh-1"></i> 重置
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/app/admin/component/layui/layui.js"></script>
+    <script>
+        layui.use(['form', 'element', 'layer'], function(){
+            var form = layui.form,
+                element = layui.element,
+                layer = layui.layer;
+
+            // 保存配置
+            form.on('submit(config-save)', function(data){
+                layer.load(2);
+                $.post('/app/admin/system-config/update', data.field, function(res){
+                    layer.closeAll('loading');
+                    if(res.code === 0){
+                        layer.msg('保存成功', {icon: 1});
+                    } else {
+                        layer.msg(res.msg || '保存失败', {icon: 2});
+                    }
+                });
+                return false;
+            });
+
+            // 清除缓存
+            $('#clear-cache').click(function(){
+                layer.load(2);
+                $.post('/app/admin/system-config/clear-cache', {}, function(res){
+                    layer.closeAll('loading');
+                    if(res.code === 0){
+                        layer.msg('缓存清除成功', {icon: 1});
+                    } else {
+                        layer.msg(res.msg || '清除失败', {icon: 2});
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

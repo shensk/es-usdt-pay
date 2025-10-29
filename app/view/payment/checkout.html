@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USDT支付 - 优雅的USDT支付中间件</title>
+  <link rel="stylesheet" href="/static/css/reset.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/layui/2.8.18/css/layui.min.css">
+  <style>
+    .main {
+      width: 320px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding-top: 20px;
+      box-sizing: border-box;
+    }
+
+    .main .logo {
+      width: 65px;
+      height: 65px;
+      margin: 0 auto 20px;
+    }
+
+    .main .logo img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .main .site {
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .main .gray-text {
+      font-size: 14px;
+      text-align: center;
+      color: #bebebe;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .main .red-text {
+      font-size: 14px;
+      text-align: center;
+      color: #f00;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .main h2 {
+      font-size: 20px;
+      text-align: center;
+      color: #333;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .main h2 small {
+      color: #bebebe;
+      font-size: 80%;
+      padding-left: 5px;
+    }
+
+    .qr-code-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .address-text {
+      font-size: 12px;
+      text-align: center;
+      color: #888;
+      margin: 10px 0 20px 0;
+      cursor: pointer;
+      word-break: break-all;
+    }
+
+    .qr-code {
+      width: 220px;
+      height: 220px;
+      border: 1px solid #f2f2f2;
+      margin: 20px auto;
+      padding: 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .qr-code>img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .qr-code-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #f00;
+      font-weight: bold;
+    }
+
+    .qr-code-mask.show {
+      display: flex;
+    }
+
+    .timer {
+      width: 140px;
+      margin: 10px auto 0 auto;
+      font-size: 14px;
+    }
+
+    .timer .label {
+      display: flex;
+      align-items: center;
+    }
+
+    .timer .label,
+    .timer .value {
+      display: flex;
+      align-items: center;
+      padding: 5px 0;
+    }
+
+    .timer .label span {
+      color: #999;
+    }
+
+    .timer .value span {
+      color: #333;
+      font-size: 16px;
+    }
+
+    .timer .value i {
+      color: #333;
+      font-size: 16px;
+      font-style: normal;
+    }
+
+    .timer .label span,
+    .timer .value span {
+      flex: 1;
+      text-align: center;
+    }
+
+    .status-text {
+      text-align: center;
+      font-size: 16px;
+      margin: 20px 0;
+      padding: 10px;
+    }
+
+    .status-pending {
+      color: #f39c12;
+    }
+
+    .status-success {
+      color: #27ae60;
+    }
+
+    .status-expired {
+      color: #e74c3c;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div class="logo">
+      <img src="/static/image/usdt-trc20.png" alt="USDT TRC20">
+    </div>
+    
+    <div class="site">订单编号：<?=$trade_id?></div>
+    
+    <div class="gray-text">当前USDT支付区块网络协议为TRC20</div>
+    
+    <?php if ($status == 1): ?>
+    <div class="red-text">！!到账金额需要与下方显示的金额一致，否则系統无法确认！！</div>
+    <div class="red-text">尝试点击钱包地址或金额可直接复制👇</div>
+    
+    <h2 onclick="copyAmount()"><?=number_format($actual_amount, 4)?> <small>USDT</small></h2>
+    <p class="address-text" onclick="copyAddress()"><?=$token?></p>
+    
+    <div class="qr-code-container">
+      <div class="qr-code">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?=$token?>" alt="钱包地址二维码">
+        <div class="qr-code-mask" id="qr-mask">
+          订单已过期
+        </div>
+      </div>
+      
+      <div class="timer">
+        <div class="value">
+          <span class="hours">00</span>
+          <i>:</i>
+          <span class="minutes">00</span>
+          <i>:</i>
+          <span class="seconds">00</span>
+        </div>
+        <div class="label">
+          <span>时</span>
+          <span>分</span>
+          <span>秒</span>
+        </div>
+      </div>
+    </div>
+
+    <?php elseif ($status == 2): ?>
+    <div class="status-text status-success">
+      ✅ 支付成功！
+    </div>
+    <?php elseif ($status == 3): ?>
+    <h2><?=number_format($actual_amount, 4)?> <small>USDT</small></h2>
+    <p class="address-text"><?=$token?></p>
+    
+    <div class="qr-code-container">
+      <div class="qr-code">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?=$token?>" alt="钱包地址二维码">
+        <div class="qr-code-mask show">
+          订单已过期
+        </div>
+      </div>
+    </div>
+    <?php else: ?>
+    <h2><?=number_format($actual_amount, 4)?> <small>USDT</small></h2>
+    <p class="address-text"><?=$token?></p>
+    
+    <div class="qr-code-container">
+      <div class="qr-code">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?=$token?>" alt="钱包地址二维码">
+        <div class="qr-code-mask show">
+          订单状态异常
+        </div>
+      </div>
+    </div>
+    <?php endif; ?>
+  </div>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.8.18/layui.min.js"></script>
+  <script>
+    const tradeId = '<?=$trade_id?>';
+    const expirationTime = <?=strtotime($expired_at)?>;
+    
+    // 支付时间倒计时
+    function clock() {
+      const timeout = new Date(expirationTime * 1000);
+      const now = new Date();
+      const ms = timeout.getTime() - now.getTime(); // 时间差的毫秒数
+      const second = Math.round(ms / 1000);
+      const minute = Math.floor(second / 60);
+      const hour = Math.floor(minute / 60);
+      const adjustedMinute = minute > 60 ? minute % 60 : minute;
+      
+      if (ms <= 0) {
+        // 显示二维码遮罩
+        document.getElementById('qr-mask').classList.add('show');
+        
+        layui.use(['layer'], function(){
+          var layer = layui.layer;
+          layer.alert("支付超时，请重新发起支付！", {icon: 5});
+        });
+        return;
+      }
+      
+      document.querySelector('.hours').textContent = hour.toString().padStart(2, '0');
+      document.querySelector('.minutes').textContent = adjustedMinute.toString().padStart(2, '0');
+      document.querySelector('.seconds').textContent = (second % 60).toString().padStart(2, '0');
+      
+      return setTimeout(clock, 1000);
+    }
+    
+    // 检查支付状态
+    function checkStatus() {
+      fetch(`/pay/check-status/${tradeId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status_code === 200 && data.data.status === 2) {
+            location.reload();
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    // 复制地址
+    function copyAddress() {
+      const address = '<?=$token?>';
+      navigator.clipboard.writeText(address).then(() => {
+        layui.use(['layer'], function(){
+          var layer = layui.layer;
+          layer.msg('地址已复制到剪贴板', {icon: 1});
+        });
+      });
+    }
+    
+    // 复制金额
+    function copyAmount() {
+      const amount = '<?=number_format($actual_amount, 4)?>';
+      navigator.clipboard.writeText(amount).then(() => {
+        layui.use(['layer'], function(){
+          var layer = layui.layer;
+          layer.msg('金额已复制到剪贴板', {icon: 1});
+        });
+      });
+    }
+    
+    // 自动检查支付状态和启动倒计时
+    <?php if ($status == 1): ?>
+    setInterval(checkStatus, 3000);
+    setTimeout(clock, 1000);
+    <?php endif; ?>
+  </script>
+</body>
+
+</html>
+
+

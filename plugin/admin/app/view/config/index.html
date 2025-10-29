@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+    <meta charset="utf-8">
+    <title>系统配置</title>
+        <link rel="stylesheet" href="/app/admin/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/app/admin/admin/css/reset.css" />
+    </head>
+    <body class="pear-container">
+        <div class="layui-card">
+        <div class="layui-card-header">
+            <h2 class="header-title">系统配置</h2>
+        </div>
+            <div class="layui-card-body">
+            <form class="layui-form" lay-filter="config-form">
+                <div class="layui-tab" lay-filter="config-tab">
+                <ul class="layui-tab-title">
+                        <li class="layui-this">网站设置</li>
+                        <li>菜单设置</li>
+                        <li>标签设置</li>
+                        <li>主题设置</li>
+                        <li>颜色设置</li>
+                </ul>
+                <div class="layui-tab-content">
+                        <!-- 网站设置 -->
+                    <div class="layui-tab-item layui-show">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="logo[title]" placeholder="请输入网站标题" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">网站LOGO</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="logo[image]" placeholder="请输入LOGO地址" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">ICP备案</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="logo[icp]" placeholder="请输入ICP备案号" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">公安备案</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="logo[beian]" placeholder="请输入公安备案号" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">底部文字</label>
+                                <div class="layui-input-block">
+                                    <textarea name="logo[footer_txt]" placeholder="请输入底部文字" class="layui-textarea"></textarea>
+                                </div>
+                                </div>
+                            </div>
+
+                        <!-- 菜单设置 -->
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">菜单数据</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="menu[data]" placeholder="请输入菜单数据接口" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">手风琴</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="menu[accordion]" title="开启" lay-skin="switch">
+                                </div>
+                    </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">菜单收缩</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="menu[collapse]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">控制按钮</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="menu[control]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">控制宽度</label>
+                                <div class="layui-input-block">
+                                    <input type="number" name="menu[controlWidth]" placeholder="请输入控制宽度" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 标签设置 -->
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">保持状态</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="tab[keepState]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">预加载</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="tab[preload]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">会话缓存</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="tab[session]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">最大标签</label>
+                                <div class="layui-input-block">
+                                    <input type="number" name="tab[max]" placeholder="请输入最大标签数" class="layui-input">
+                                </div>
+                    </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">首页ID</label>
+                                <div class="layui-input-block">
+                                    <input type="number" name="tab[index][id]" placeholder="请输入首页ID" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">首页链接</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="tab[index][href]" placeholder="请输入首页链接" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">首页标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="tab[index][title]" placeholder="请输入首页标题" class="layui-input">
+                                </div>
+                                </div>
+                            </div>
+
+                        <!-- 主题设置 -->
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">默认颜色</label>
+                                <div class="layui-input-block">
+                                    <select name="theme[defaultColor]">
+                                        <option value="1">蓝色</option>
+                                        <option value="2">绿色</option>
+                                        <option value="3">红色</option>
+                                        <option value="4">橙色</option>
+                                        <option value="5">紫色</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">菜单主题</label>
+                                <div class="layui-input-block">
+                                    <select name="theme[defaultMenu]">
+                                        <option value="light-theme">浅色主题</option>
+                                        <option value="dark-theme">深色主题</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">头部主题</label>
+                                <div class="layui-input-block">
+                                    <select name="theme[defaultHeader]">
+                                        <option value="light-theme">浅色主题</option>
+                                        <option value="dark-theme">深色主题</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">允许自定义</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="theme[allowCustom]" title="开启" lay-skin="switch">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">横幅</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="theme[banner]" title="开启" lay-skin="switch">
+                                </div>
+                                </div>
+                            </div>
+
+                        <!-- 颜色设置 -->
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <p>颜色配置将在后续版本中提供更多自定义选项</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit lay-filter="config-save">保存配置</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    <script src="/app/admin/component/layui/layui.js"></script>
+        <script>
+        layui.use(['form', 'element', 'layer'], function(){
+            var form = layui.form,
+                element = layui.element,
+                layer = layui.layer;
+
+            // 获取配置数据
+            $.get('/app/admin/config/get', function(res){
+                if(res && typeof res === 'object'){
+                    // 填充表单数据
+                    if(res.logo){
+                        $('input[name="logo[title]"]').val(res.logo.title || '');
+                        $('input[name="logo[image]"]').val(res.logo.image || '');
+                        $('input[name="logo[icp]"]').val(res.logo.icp || '');
+                        $('input[name="logo[beian]"]').val(res.logo.beian || '');
+                        $('textarea[name="logo[footer_txt]"]').val(res.logo.footer_txt || '');
+                    }
+                    
+                    if(res.menu){
+                        $('input[name="menu[data]"]').val(res.menu.data || '');
+                        $('input[name="menu[accordion]"]').prop('checked', res.menu.accordion || false);
+                        $('input[name="menu[collapse]"]').prop('checked', res.menu.collapse || false);
+                        $('input[name="menu[control]"]').prop('checked', res.menu.control || false);
+                        $('input[name="menu[controlWidth]"]').val(res.menu.controlWidth || 2000);
+                    }
+                    
+                    if(res.tab){
+                        $('input[name="tab[keepState]"]').prop('checked', res.tab.keepState || false);
+                        $('input[name="tab[preload]"]').prop('checked', res.tab.preload || false);
+                        $('input[name="tab[session]"]').prop('checked', res.tab.session || false);
+                        $('input[name="tab[max]"]').val(res.tab.max || 30);
+                        if(res.tab.index){
+                            $('input[name="tab[index][id]"]').val(res.tab.index.id || 0);
+                            $('input[name="tab[index][href]"]').val(res.tab.index.href || '');
+                            $('input[name="tab[index][title]"]').val(res.tab.index.title || '首页');
+                        }
+                    }
+                    
+                    if(res.theme){
+                        $('select[name="theme[defaultColor]"]').val(res.theme.defaultColor || 2);
+                        $('select[name="theme[defaultMenu]"]').val(res.theme.defaultMenu || 'light-theme');
+                        $('select[name="theme[defaultHeader]"]').val(res.theme.defaultHeader || 'light-theme');
+                        $('input[name="theme[allowCustom]"]').prop('checked', res.theme.allowCustom || false);
+                        $('input[name="theme[banner]"]').prop('checked', res.theme.banner || false);
+                    }
+                    
+                    form.render();
+                }
+            });
+
+            // 保存配置
+            form.on('submit(config-save)', function(data){
+                layer.load(2);
+                $.post('/app/admin/config/update', data.field, function(res){
+                    layer.closeAll('loading');
+                    if(res.code === 0){
+                        layer.msg('保存成功', {icon: 1});
+                    } else {
+                        layer.msg(res.msg || '保存失败', {icon: 2});
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+    </body>
+</html>

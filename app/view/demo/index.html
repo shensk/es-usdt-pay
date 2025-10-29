@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDT支付系统 - API测试页面</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/layui/2.8.18/css/layui.min.css">
+    <style>
+        body { padding: 20px; background-color: #f5f5f5; }
+        .demo-container { max-width: 1200px; margin: 0 auto; }
+        .api-section { margin-bottom: 30px; }
+        .result-box { 
+            background: #f8f8f8; 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .result-box pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+        .layui-card { margin-bottom: 20px; }
+        .quick-links { margin-bottom: 20px; }
+        .quick-links a { margin-right: 10px; }
+        .layui-card-header { position: relative; padding-bottom: 35px; }
+        .layui-card-header .layui-badge { position: absolute; bottom: 10px; left: 15px; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <h1>🚀 USDT支付系统 - API测试页面</h1>
+            </div>
+            <div class="layui-card-body">
+            </div>
+        </div>
+
+        <!-- 创建支付订单 -->
+        <div class="layui-card api-section">
+            <div class="layui-card-header">
+                <h3>💰 创建支付订单</h3>
+                <span class="layui-badge layui-bg-blue">POST /api/v1/order/create-transaction</span>
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form" lay-filter="create-order-form">
+                    <div class="layui-row layui-col-space10">
+                        <div class="layui-col-md6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">订单金额</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="amount" value="100.00" placeholder="请输入金额" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">回调地址</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="notify_url" value="http://localhost/callback" placeholder="请输入回调地址" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跳转地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="redirect_url" value="http://localhost/success" placeholder="请输入跳转地址" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" onclick="createOrder()" class="layui-btn layui-btn-normal">
+                                <i class="layui-icon layui-icon-add-1"></i> 创建订单
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="create-order-result" class="result-box" style="display: none;">
+                    <pre id="create-order-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 查询订单状态 -->
+        <div class="layui-card api-section">
+            <div class="layui-card-header">
+                <h3>🔍 查询订单状态</h3>
+                <span class="layui-badge layui-bg-green">GET /pay/check-status/{trade_id}</span>
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">交易ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="check-trade-id" placeholder="请输入交易ID" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" onclick="checkStatus()" class="layui-btn layui-btn-normal">
+                                <i class="layui-icon layui-icon-search"></i> 查询状态
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="check-status-result" class="result-box" style="display: none;">
+                    <pre id="check-status-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 获取支付页面数据 -->
+        <div class="layui-card api-section">
+            <div class="layui-card-header">
+                <h3>💳 获取支付页面数据</h3>
+                <span class="layui-badge layui-bg-orange">GET /pay/checkout-counter/{trade_id}</span>
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">交易ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="checkout-trade-id" placeholder="请输入交易ID" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" onclick="getCheckoutData()" class="layui-btn layui-btn-normal">
+                                <i class="layui-icon layui-icon-template-1"></i> 获取数据
+                            </button>
+                            <button type="button" onclick="openPaymentPage()" class="layui-btn layui-btn-primary">
+                                <i class="layui-icon layui-icon-link"></i> 打开支付页面
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="checkout-data-result" class="result-box" style="display: none;">
+                    <pre id="checkout-data-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手动回调 -->
+        <div class="layui-card api-section">
+            <div class="layui-card-header">
+                <h3>📞 手动回调</h3>
+                <span class="layui-badge layui-bg-red">POST /demo/manual-callback</span>
+            </div>
+            <div class="layui-card-body">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">交易ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="callback-trade-id" placeholder="请输入交易ID" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">回调地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="callback-url" value="http://localhost:8787/demo/receive-callback" placeholder="请输入回调地址" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" onclick="manualCallback()" class="layui-btn layui-btn-danger">
+                                <i class="layui-icon layui-icon-release"></i> 发送回调
+                            </button>
+                            <button type="button" onclick="getCallbackLogs()" class="layui-btn layui-btn-primary">
+                                <i class="layui-icon layui-icon-file"></i> 查看回调日志
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="callback-result" class="result-box" style="display: none;">
+                    <pre id="callback-content"></pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/layui/2.8.18/layui.min.js"></script>
+    <script>
+        layui.use(['layer', 'form'], function(){
+            var layer = layui.layer;
+            var form = layui.form;
+            
+            window.layer = layer;
+        });
+
+        // 创建支付订单
+        function createOrder() {
+            const amount = document.querySelector('input[name="amount"]').value;
+            const notifyUrl = document.querySelector('input[name="notify_url"]').value;
+            const redirectUrl = document.querySelector('input[name="redirect_url"]').value;
+
+            if (!amount || !notifyUrl || !redirectUrl) {
+                layer.msg('请填写完整信息', {icon: 2});
+                return;
+            }
+
+            layer.load(1);
+            
+            fetch('/demo/create-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `amount=${amount}&notify_url=${encodeURIComponent(notifyUrl)}&redirect_url=${encodeURIComponent(redirectUrl)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                layer.closeAll('loading');
+                document.getElementById('create-order-result').style.display = 'block';
+                document.getElementById('create-order-content').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success && data.data && data.data.trade_id) {
+                    // 自动填充交易ID到所有相关输入框
+                    const tradeId = data.data.trade_id;
+                    document.getElementById('check-trade-id').value = tradeId;     // 查询用交易ID
+                    document.getElementById('checkout-trade-id').value = tradeId; // 支付页面用交易ID
+                    document.getElementById('callback-trade-id').value = tradeId; // 回调用交易ID
+                    layer.msg('订单创建成功！', {icon: 1});
+                } else {
+                    layer.msg('订单创建失败: ' + (data.error || '未知错误'), {icon: 2});
+                }
+            })
+            .catch(error => {
+                layer.closeAll('loading');
+                layer.msg('请求失败: ' + error.message, {icon: 2});
+            });
+        }
+
+        // 查询订单状态
+        function checkStatus() {
+            const orderId = document.getElementById('check-trade-id').value;
+            
+            if (!orderId) {
+                layer.msg('请输入订单ID', {icon: 2});
+                return;
+            }
+
+            layer.load(1);
+            
+            fetch('/demo/check-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `order_id=${orderId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                layer.closeAll('loading');
+                document.getElementById('check-status-result').style.display = 'block';
+                document.getElementById('check-status-content').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    layer.msg('查询成功！', {icon: 1});
+                } else {
+                    layer.msg('查询失败: ' + data.error, {icon: 2});
+                }
+            })
+            .catch(error => {
+                layer.closeAll('loading');
+                layer.msg('请求失败: ' + error.message, {icon: 2});
+            });
+        }
+
+        // 获取支付页面数据
+        function getCheckoutData() {
+            const tradeId = document.getElementById('checkout-trade-id').value;
+            
+            if (!tradeId) {
+                layer.msg('请输入交易ID', {icon: 2});
+                return;
+            }
+
+            layer.load(1);
+            
+            fetch('/demo/get-checkout-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `trade_id=${tradeId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                layer.closeAll('loading');
+                document.getElementById('checkout-data-result').style.display = 'block';
+                document.getElementById('checkout-data-content').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    layer.msg('获取成功！', {icon: 1});
+                } else {
+                    layer.msg('获取失败: ' + data.error, {icon: 2});
+                }
+            })
+            .catch(error => {
+                layer.closeAll('loading');
+                layer.msg('请求失败: ' + error.message, {icon: 2});
+            });
+        }
+
+        // 打开支付页面
+        function openPaymentPage() {
+            const tradeId = document.getElementById('checkout-trade-id').value;
+            
+            if (!tradeId) {
+                layer.msg('请输入交易ID', {icon: 2});
+                return;
+            }
+
+            window.open(`/pay/checkout-counter/${tradeId}`, '_blank');
+        }
+
+        // 手动回调
+        function manualCallback() {
+            const tradeId = document.getElementById('callback-trade-id').value;
+            const callbackUrl = document.getElementById('callback-url').value;
+            
+            if (!tradeId) {
+                layer.msg('请输入交易ID', {icon: 2});
+                return;
+            }
+            
+            if (!callbackUrl) {
+                layer.msg('请输入回调地址', {icon: 2});
+                return;
+            }
+
+            layer.load(1);
+            
+            fetch('/demo/manual-callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `trade_id=${tradeId}&callback_url=${encodeURIComponent(callbackUrl)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                layer.closeAll('loading');
+                document.getElementById('callback-result').style.display = 'block';
+                document.getElementById('callback-content').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    layer.msg('回调发送成功！', {icon: 1});
+                } else {
+                    layer.msg('回调发送失败: ' + data.error, {icon: 2});
+                }
+            })
+            .catch(error => {
+                layer.closeAll('loading');
+                layer.msg('请求失败: ' + error.message, {icon: 2});
+            });
+        }
+
+        // 查看回调日志
+        function getCallbackLogs() {
+            layer.load(1);
+            
+            fetch('/demo/get-callback-logs', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                layer.closeAll('loading');
+                
+                if (data.success) {
+                    // 使用layui的弹窗显示日志
+                    let content = '<div style="max-height: 500px; overflow-y: auto;">';
+                    
+                    if (data.data.callback_logs && data.data.callback_logs.length > 0) {
+                        content += '<h3>✅ 成功回调日志 (最近20条)</h3>';
+                        data.data.callback_logs.forEach(log => {
+                            const statusColor = log.signature_valid ? '#5FB878' : '#FF5722';
+                            content += `
+                                <div style="border: 1px solid #e6e6e6; margin: 10px 0; padding: 10px; border-radius: 5px;">
+                                    <p><strong>时间:</strong> ${log.timestamp}</p>
+                                    <p><strong>交易ID:</strong> ${log.trade_id}</p>
+                                    <p><strong>订单ID:</strong> ${log.order_id}</p>
+                                    <p><strong>状态:</strong> ${log.status}</p>
+                                    <p><strong>签名验证:</strong> <span style="color: ${statusColor};">${log.signature_valid ? '✅ 成功' : '❌ 失败'}</span></p>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        content += '<p>暂无成功回调日志</p>';
+                    }
+                    
+                    if (data.data.error_logs && data.data.error_logs.length > 0) {
+                        content += '<h3 style="margin-top: 20px;">❌ 错误日志 (最近10条)</h3>';
+                        data.data.error_logs.forEach(log => {
+                            content += `
+                                <div style="border: 1px solid #FF5722; margin: 10px 0; padding: 10px; border-radius: 5px; background: #fff2f0;">
+                                    <p><strong>时间:</strong> ${log.received_time}</p>
+                                    <p><strong>错误:</strong> ${log.error}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    content += '</div>';
+                    
+                    layer.open({
+                        type: 1,
+                        title: '📋 回调日志',
+                        area: ['80%', '70%'],
+                        content: content,
+                        btn: ['关闭'],
+                        yes: function(index) {
+                            layer.close(index);
+                        }
+                    });
+                    
+                    layer.msg('日志加载成功！', {icon: 1});
+                } else {
+                    layer.msg('加载日志失败: ' + data.error, {icon: 2});
+                }
+            })
+            .catch(error => {
+                layer.closeAll('loading');
+                layer.msg('请求失败: ' + error.message, {icon: 2});
+            });
+        }
+
+    </script>
+</body>
+</html>
