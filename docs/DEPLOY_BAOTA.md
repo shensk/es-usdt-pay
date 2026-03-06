@@ -152,7 +152,7 @@ git clone https://github.com/your-repo/webman-usdt-payment.git .
 curl -sS https://getcomposer.org/installer | php
 
 # 移动到全局目录
-mv composer.phar /usr/local/bin/composer
+mv composer.phar /usr/local/bin/
 
 #进入
 cd /usr/local/bin/composer
