@@ -103,7 +103,7 @@ opcache.revalidate_freq = 60
    - **根目录**: /www/wwwroot/usdt-payment
    - **FTP**: 不创建
    - **数据库**: MySQL (记住数据库名、用户名、密码)
-   - **PHP版本**: PHP-81
+   - **PHP版本**: PHP-81 （移除 puteenv插件）
 
 ### 3.2 SSL证书配置（推荐）
 
@@ -153,6 +153,9 @@ curl -sS https://getcomposer.org/installer | php
 
 # 移动到全局目录
 mv composer.phar /usr/local/bin/composer
+
+#进入
+cd /usr/local/bin/composer
 
 # 设置中国镜像（加速下载）
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
