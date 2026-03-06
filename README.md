@@ -67,6 +67,7 @@ cd webman-usdt-payment
 
 2. **安装依赖**
 ```bash
+composer update
 composer install
 ```
 
