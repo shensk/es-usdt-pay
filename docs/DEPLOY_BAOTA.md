@@ -165,6 +165,7 @@ composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 ```bash
 cd /www/wwwroot/usdt-payment
+composer update
 composer install --no-dev --optimize-autoloader
 ```
 
